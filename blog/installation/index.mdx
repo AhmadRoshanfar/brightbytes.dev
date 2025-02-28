@@ -1,0 +1,53 @@
+---
+title: "Gettingqtq "
+date: "2025-04-03"
+slug: "getting-started-with-qt"
+tags:
+  - "MQTT"
+  - "TFLite"
+  - "Qt"
+featuredImage: ./cover.jpeg
+isFavorite: "Yes"
+---
+
+# Installation
+
+### Install Qt’s MQTT Library
+
+[https://code.qt.io/cgit/qt/qtmqtt.git/](https://code.qt.io/cgit/qt/qtmqtt.git/)
+
+[Getting Started with MQTT using Qt #mqtt #qt](https://www.youtube.com/watch?v=DGB0GfFRqPo)
+
+<aside>
+⚠️ Not working with 6.5 version. Currently using 6.2.4 version as mentioned in the above video.”
+
+</aside>
+
+```bash
+#Qt_Environment.sh created in qmqtt folder
+
+export QT_VERSION="6.2.4"
+export QT_INSTALL_DIR="/home/ahmad/Qt5/"
+export CMAKE_BIN_DIR="${QT_INSTALL_DIR}/Tools/CMake/bin"
+export QMAKE_BIN_DIR="${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin"
+export CMAKE_PREFIX_PATH="${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/lib/cmake"
+export NINJA_DIR="${QT_INSTALL_DIR}/Tools/Ninja"
+export PATH="${PATH}:${CMAKE_BIN_DIR}:${QMAKE_BIN_DIR}:${NINJA_DIR}"
+```
+
+```bash
+git clone -b 6.2.4 git://code.qt.io/qt/qtmqtt.git 
+cd qtmqtt
+mkdir build && cd build
+source ../Qt_Environment.sh 
+<QT_Installation_Path>/6.5.0/gcc_64/bin/qt-configure-module ..
+<QT_Installation_Path>/Tools/CMake/bin/cmake --build .   
+<QT_Installation_Path>/Tools/CMake/bin/cmake --install . --verbose
+```
+
+### Adding MQTT to the project
+
+```c
+find_package(Qt6 REQUIRED COMPONENTS Mqtt)
+target_link_libraries(mytarget PRIVATE Qt6::Mqtt)
+```

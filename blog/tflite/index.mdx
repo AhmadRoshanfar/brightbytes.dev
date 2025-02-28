@@ -1,0 +1,219 @@
+---
+title: "Getting Started with TFLite"
+date: "2024-04-29"
+slug: "getting-started-with-tflite"
+tags:
+  - "AI"
+  - "TFLite"
+  - "Qt"
+featuredImage: ./tflite.png
+isFavorite: "Yes"
+---
+import MyImage from './tflite.png';
+import CodeViewer from '../../src/components/mdx/codeViewer.js';
+
+# Getting Started
+
+**Install with Bazel to create libtensorflowlite.so** 
+
+Download **release** version of [Bazelisk](https://github.com/bazelbuild/bazelisk):
+
+<CodeViewer
+  code={`\
+  sudo chmod +x bazelisk-linux-amd64 
+  sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel \
+  `}
+/>
+
+
+Download a **release** verison of [TesnorFlow Github](https://github.com/tensorflow/tensorflow):
+
+<CodeViewer
+  code={`\
+    cd <tensorflow_src>
+    ./configure  #Default Options
+  `}
+  filename="greet.js"
+/>
+
+<div style={{ display: 'flex', justifyContent: 'center' }}>
+  <img src={MyImage} alt="Descriptive text" />
+</div>
+
+
+Generating `libtensorflowlite.so`
+
+
+<CodeViewer
+  code={`\
+    bazel build -c opt //tensorflow/lite:libtensorflowlite.so \
+    `}
+  filename="greet.js"
+/>
+
+<CodeViewer
+  code={`\
+    <tensorflow_sr>/bazel-bin/tensorflow/lite/libtensorflowlite.so \
+  `}
+  filename="greet.js"
+/>
+
+
+Test setup with Minimal example project
+
+- Using libraries system wide:
+```bash
+$ sudo cp -r  tflite_build/flatbuffers/include/**flatbuffers** /usr/local/include
+```
+
+/home/ahmad/tflite/tensorflow-2.16.1/bazel-bin/external/flatbuffers/_virtual_includes/flatbuffers/
+```bash
+$ sudo cp -r tensorflow_src/**tensorflow**/ /usr/local/include
+```
+
+- or copy them inside the projects and add them with CMake.
+
+```bash
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/)
+```
+
+<CodeViewer
+  code={`\
+    mkdir build && cd build 
+    cmake .. 
+    make 
+    ./<app-name> <modelName> \
+  `}
+  filename="greet.js"
+/>
+
+
+
+Make 
+<CodeViewer
+  code={`\
+    mkdir build && cd build 
+    cmake .. 
+    make 
+    ./<app-name> <modelName> \
+  `}
+  filename="greet.js"
+/>
+
+Integrating [libtensorflowlite.so](http://libtensorflowlite.so) with Qt
+
+```bash
+ADD_LIBRARY(tensorflowlite SHARED IMPORTED)
+set_property(TARGET tensorflowlite PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libs/libtensorflowlite.so)
+
+target_link_libraries(appQt-ImageClassification
+    PRIVATE Qt6::Quick
+    tensorflowlite
+)
+```
+
+Adding TfLite via subfolder to Qt Widget App.
+
+```js filename="CMakeLists.txt"
+add_subdirectory(
+  "/home/ahmad/tflite/tensorflow_src/tensorflow/lite/"
+  "${CMAKE_CURRENT_BINARY_DIR}/tensorflow-lite"
+  EXCLUDE_FROM_ALL
+)
+target_link_libraries(tflite_widget PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(tflite_widget PRIVATE tensorflow-lite ${CMAKE_DL_LIBS})
+target_include_directories(tflite_widget PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+```
+Header File
+```cpp
+#ifndef MODEL_H
+#define MODEL_H
+
+#endif // MODEL_H
+
+void testModel();
+
+```
+CPP Code
+
+
+
+<CodeViewer
+  code={`\
+#include "tensorflow/lite/interpreter.h"
+#include "tensorflow/lite/kernels/register.h"
+#include "tensorflow/lite/model.h"
+#include "tensorflow/lite/optional_debug_tools.h"
+#include <cstdio>
+
+#define TFLITE_MINIMAL_CHECK(x)                              \
+if (!(x))                                                     \
+    {                                                          \
+            fprintf(stderr, "Error at %s:%d\n", __FILE__, __LINE__); \
+            exit(1);                                                 \
+    }
+
+void testModel()
+{
+  const char *filename = "../Qt-ImageClassification/mobilenet.tflite";
+
+  // Load model
+  std::unique_ptr<tflite::FlatBufferModel> model = tflite::FlatBufferModel::BuildFromFile(filename);
+  TFLITE_MINIMAL_CHECK(model != nullptr);
+  tflite::ops::builtin::BuiltinOpResolver resolver;
+  tflite::InterpreterBuilder builder(*model, resolver);
+  std::unique_ptr<tflite::Interpreter> interpreter;
+  builder(&interpreter);
+  TFLITE_MINIMAL_CHECK(interpreter != nullptr);
+
+  // Allocate tensor buffers.
+  TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
+  printf("=== Pre-invoke Interpreter State ===\\n");
+  tflite::PrintInterpreterState(interpreter.get());
+
+  // Run inference
+  TFLITE_MINIMAL_CHECK(interpreter->Invoke() == kTfLiteOk);
+  printf("\\n\\n=== Post-invoke Interpreter State ===\\n");
+  tflite::PrintInterpreterState(interpreter.get());
+} \
+  `}
+  filename="ai.cpp"
+  language="cpp"
+/>
+
+And finally `#include “model.h”` and call `testModel()` inside the main.cpp.
+
+---
+
+### [Build TensorFlow Lite with CMake](https://www.tensorflow.org/lite/guide/build_cmake) to create libtesnorflow.a
+
+
+<CodeViewer
+  code={`\
+    sudo apt-get install cmake
+    git clone https://github.com/tensorflow/tensorflow.git tensorflow_src
+    mkdir tflite_build
+    cd tflite_build
+    cmake ../tensorflow_src/tensorflow/lite
+    cmake --build . -j \
+  `}
+  filename="greet.js"
+/>
+
+
+
+### Adding as library to the system
+
+<CodeViewer
+  code={`\
+    cd <tensorflow_path>
+    sudo cp tflite_build/libtensorflow-lite.a /usr/local/lib
+    sudo cp -r  tflite_build/flatbuffers/include/flatbuffers /usr/local/include
+    sudo cp -r tensorflow_src/tensorflow/ /usr/local/include \
+  `}
+  filename="greet.js"
+/>
+---
+Examples: [https://github.com/iwatake2222/play_with_tflite](https://github.com/iwatake2222/play_with_tflite)
+
+[https://github.com/iwatake2222/play_with_tflite/blob/master/00_doc/how_to_create_prebuilt_tensorflow_lite_library_v2.4.0.md](https://github.com/iwatake2222/play_with_tflite/blob/master/00_doc/how_to_create_prebuilt_tensorflow_lite_library_v2.4.0.md)
