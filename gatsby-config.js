@@ -4,10 +4,9 @@
 const config = require("./config");
 
 module.exports = {
-  // pathPrefix: "/AhmadRoshanfar.github.io",
+  // pathPrefix: "/brightbytes.dev",
   siteMetadata: {
     title: `BrightBytes.dev`,
-    // siteUrl: "https://ahmadroshanfar.github.io",
     siteUrl: "https://brightbytes.dev",
   },
   plugins: [
@@ -40,7 +39,7 @@ module.exports = {
       resolve: "gatsby-source-filesystem",
       options: {
         name: `blog`,
-        path: `${__dirname}/blog`,
+        path: `${__dirname}/src/blog`,
       },
       __key: "pages",
     },

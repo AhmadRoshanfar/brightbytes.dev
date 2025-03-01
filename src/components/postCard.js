@@ -29,7 +29,7 @@ const PostCard = ({ nodes }) => {
             </div>
             <div className="flex justify-between items-center mt-2 mx-3 text-sm">
               <p className="ml-4">Author: Ahmad Roshanfar</p>
-              <p>Posted: {node.frontmatter.date}</p>
+              <p className="mr-4">Posted: {node.frontmatter.date}</p>
             </div>
           </div>
       </Link>

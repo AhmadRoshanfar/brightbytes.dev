@@ -1,7 +1,6 @@
 const config = {
   gatsby: {
-    // pathPrefix: "/AhmadRoshanfar.github.io",
-    // siteUrl: "https://ahmadroshanfar.github.io",
+    // pathPrefix: "/brightbytes.dev",
     siteUrl: "https://brightbytes.dev",
     gaTrackingId: null,
     trailingSlash: false,
