@@ -1,0 +1,1 @@
+{"componentChunkName":"component---src-templates-tags-template-js","path":"/tags/blog/","result":{"data":{"allMdx":{"totalCount":1,"edges":[{"node":{"frontmatter":{"slug":"deploying-a-gatsby-site-on-github-pages","title":"Deploying a Gatsby Site on GitHub Pages"}}}]}},"pageContext":{"tag":"Blog"}},"staticQueryHashes":[],"slicesMap":{}}
