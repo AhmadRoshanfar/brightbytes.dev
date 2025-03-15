@@ -1,0 +1,150 @@
+---
+title: "Deploying a Gatsby Site on GitHub Pages"
+date: "2025-03-15"
+slug: "deploying-a-gatsby-site-on-github-pages"
+tags:
+  - "Gatsby"
+  - "GithubPages"
+  - "Blog"
+featuredImage: ./gatsby-github.png
+isFavorite: "Yes"
+---
+import CodeViewer from '../../components/mdx/codeViewer.js';
+
+# Deploying a Gatsby Site on GitHub Pages
+
+## Introduction
+
+Hello! This is my first blog post. In this post, I’ll explain how to deploy a site built with Gatsby on GitHub Pages. I'm using GitHub Pages as a host because it's free and easy!
+
+
+## Step 1: Install `gh-pages`
+
+First, we need to install the `gh-pages` package:
+
+<CodeViewer
+  code={`\
+    npm install gh-pages
+  `}
+/>
+
+## Step 2: Add a Deploy Script
+
+Add the following deploy script in the `package.json` file:
+
+
+<CodeViewer
+  code={`\
+  "scripts": {
+    "develop": "gatsby develop",
+    "start": "gatsby develop -o -H 0.0.0.0",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public -c CNAME"
+  },  
+`}
+/>
+
+## Step 3: Create a `config.js` File
+
+Create a `config.js` file in the root of your project and add the following content:
+
+
+<CodeViewer
+  code={`\
+  const config = {
+  gatsby: {
+    siteUrl: "https://<YOUR_SITE_DOMAIN>",
+    gaTrackingId: null,
+    trailingSlash: false,
+  },
+};
+  },  
+`}
+/>
+
+Then, include this file at the top of `gatsby-config.js`:
+
+
+<CodeViewer
+  code={`\
+/**
+ * @type {import('gatsby').GatsbyConfig}
+ */
+const config = require("./config");
+`}
+/>
+
+## Step 4: Configure Domain Settings
+
+Add a CNAME and four A records in your domain DNS settings. Refer to the [GitHub documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#configuring-an-apex-domain) for more details.
+
+
+<CodeViewer
+  code={`\
+CNAME    www    <YOUR_GITHUB_USERNAME>.github.io.
+
+A        @      185.199.108.153
+A        @      185.199.109.153
+A        @      185.199.110.153
+A        @      185.199.111.153
+`}
+/>
+
+Make sure to delete any other CNAME and A records.
+
+## Step 5: Create a GitHub Repository
+
+Create a new repository on GitHub and add your project:
+
+<CodeViewer
+  code={`\
+git init .
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/<username>/<repo_name>.git
+git push -u origin main
+`}
+/>
+
+Now, go to **Settings → Pages** (in the left bar)→ **Custom Domain**, and enter your domain and ensure **Enforce HTTPS is checked and DNS check successful.**
+
+## Step 6: Deploy Your Site
+
+### Build and Test Locally
+
+Before publishing, build and serve your website in deployment mode to check everything works as you want:
+
+<CodeViewer
+  code={`\
+gatsby build
+gatsby serve
+`}
+/>
+
+### Publish to GitHub Pages
+
+To deploy your site on GitHub Pages, run:
+
+<CodeViewer
+  code={`\
+npm run deploy
+`}
+/>
+
+
+## Step 7: Add a Permanent CNAME
+
+To avoid setting the custom domain every time you deploy, create a `static/CNAME` file and add your website domain:
+
+<CodeViewer
+  code={`\
+brightbytes.dev
+`}
+/>
+
+## Conclusion
+
+That's it! You’ve successfully deployed your Gatsby site to GitHub Pages. Now your site is live and accessible on your custom domain.
