@@ -4,11 +4,11 @@ import { useEffect } from "react"
 import { navigate } from "gatsby"
 
 const IndexPage = () => {
-    useEffect(() => {
-      navigate("/blog", { replace: true })
-    }, [])
-  
-    return null
+  useEffect(() => {
+    navigate("/blog", { replace: true })
+  }, [])
+
+  return null
 };
 
 export default IndexPage;

@@ -1,0 +1,143 @@
+---
+title: "Getting Started with Flutter on Embedded Linux"
+description: "Install and run Flutter applications on an Orange Pi Zero 2W using flutter-elinux and the Linux framebuffer."
+tags:
+  - "Flutter"
+  - "Embedded Linux"
+  - "OrangePi Zero 2W"
+date: "2025-06-11"
+slug: "getting-started-with-Flutter-on-Embedded-Linux"
+featuredImage: ./image.png
+isFavorite: "Yes"
+---
+
+import CodeViewer from '../../components/mdx/codeViewer.js';
+
+# Getting Started with Flutter on Embedded Linux
+
+Flutter is an open-source framework that lets you build multi-platform applications from a single Dart codebase. While Flutter officially targets mobile, desktop, and web, with [flutter-elinux](https://github.com/sony/flutter-elinux) you can bring Flutter to resource-constrained Embedded Linux devices like the Orange Pi Zero 2W.
+
+<br/>
+## 1. SSH into the Orange Pi Zero 2W
+
+<CodeViewer
+  code={`\
+   # Discover the board's IP on your LAN:
+   hostname -I
+   nmap -sn 192.168.1.0/24
+
+   # SSH in (default credentials):
+   ssh orangepi@<BOARD_IP>
+   # password: orangepi `}
+/>
+
+## 2. Install Dependencies & flutter-elinux
+
+<CodeViewer
+  code={`\
+sudo apt update
+sudo apt install libstdc++-12-dev unzip curl clang cmake pkg-config git`}
+/>
+
+Clone and set up the CLI:
+
+<CodeViewer
+  code={`\
+git clone https://github.com/sony/flutter-elinux.git
+sudo mv flutter-elinux /opt/
+export PATH=$PATH:/opt/flutter-elinux/bin`}
+/>
+
+Verify your device is recognized:
+
+<CodeViewer
+  code={`\
+flutter-elinux devices
+# Should list something like “elinux-arm64”.`}
+/>
+
+
+## 3. Create & Test a Sample App on X11
+
+Use X11 for rapid iteration:
+
+<CodeViewer
+  code={`\
+flutter-elinux create sample
+cd sample
+
+export XDG_SESSION_TYPE=x11
+export DISPLAY=:0
+
+flutter-elinux run -d elinux-x11`}
+/>
+
+You’ll get hot-reload and desktop-like development.
+
+
+## 4. Run on the Linux Framebuffer (DRM/GBM)
+
+Bypass X11 to run directly on DRM/KMS:
+
+1. Stop and disable your display manager:
+
+<CodeViewer
+  code={`\
+sudo systemctl stop lightdm
+sudo systemctl disable lightdm`}
+/>
+
+2. Build for the GBM backend:
+
+<CodeViewer
+  code={`\
+flutter-elinux build elinux --debug --target-backend-type=gbm`}
+/>
+
+3. Launch on `/dev/dri/card0`:
+
+<CodeViewer
+  code={`\
+sudo XDG_RUNTIME_DIR=/tmp/runtime-root \\
+     FLUTTER_DRM_DEVICE=/dev/dri/card0 \\
+     ./build/elinux/arm64/debug/bundle/sample \\
+     -b ./build/elinux/arm64/debug/bundle`}
+/>
+
+Your Flutter UI should appear fullscreen via DRM/KMS.
+
+
+## 5. Auto-Start with systemd
+
+Create `/etc/systemd/system/flutter-sample.service`:
+
+<CodeViewer
+  code={`\
+[Unit]
+Description=Flutter Sample App
+After=network.target
+
+[Service]
+User=orangepi
+WorkingDirectory=/home/orangepi/sample
+ExecStart=/bin/bash -c "\\
+  XDG_RUNTIME_DIR=/tmp/runtime-root \\
+  FLUTTER_DRM_DEVICE=/dev/dri/card0 \\
+  /home/orangepi/sample/build/elinux/arm64/debug/bundle/sample \\
+  -b /home/orangepi/sample/build/elinux/arm64/debug/bundle"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target`}
+/>
+
+Enable and start it:
+
+<CodeViewer
+  code={`\
+sudo systemctl daemon-reload
+sudo systemctl enable flutter-sample.service
+sudo systemctl start flutter-sample.service`}
+/>
+
+On reboot, your Flutter app will launch directly on the framebuffer.

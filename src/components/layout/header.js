@@ -1,7 +1,6 @@
 import { Link } from "gatsby";
 import React from "react";
 
-import logo from "../../images/logo.png"; // Adjust the path as needed
 
 
 const Header = () => {
@@ -10,9 +9,9 @@ const Header = () => {
       <nav className="flex items-center justify-between h-full">
         <div className=" flex float-left my-3 mx-10">
           <Link href="/" className="text-white text-2xl justify-start">
-           <h1 className="logo-text text-logo-color">
-           BrightBytes.dev
-            </h1>   
+            <h1 className="logo-text text-logo-color">
+              BrightBytes.dev
+            </h1>
           </Link>
         </div>
         <div className="flex justify-end h-full float-right">
