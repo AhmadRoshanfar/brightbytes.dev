@@ -5,17 +5,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Jersey+25&display=swap");
 
 @layer base {
+
   h1,
   h2,
   h3 {
     @apply font-bold mb-3;
   }
+
   h1 {
     @apply text-3xl;
   }
+
   h2 {
     @apply text-2xl;
   }
+
   h2 {
     @apply text-xl;
   }
@@ -23,21 +27,25 @@
   pre {
     @apply bg-slate-900 p-4 rounded-lg my-2;
   }
+
   code:where(:not(pre > *)) {
     @apply text-green-300 p-4;
   }
+
   code:not(:where(pre > *)) {
-    @apply bg-teal-200 px-2 py-1 text-black  rounded-lg;
+    @apply bg-teal-200 px-2 py-1 text-black rounded-lg;
   }
+
   p {
     @apply p-2;
   }
-  pre > code > p {
+
+  pre>code>p {
     @apply bg-teal-200 px-2 py-1 text-black rounded-lg;
   }
 
   a {
-    @apply text-cyan-600  bg-cyan-100 rounded-2xl py-1 font-bold px-2 hover:bg-teal-400 hover:text-white;
+    @apply text-cyan-600 bg-cyan-100 rounded-2xl py-1 font-bold px-2 hover:bg-teal-400 hover:text-white;
   }
 
   nav a {
@@ -45,17 +53,28 @@
   }
 
   article a {
-    @apply text-green-400 no-underline bg-transparent hover:bg-transparent ;
+    @apply text-green-400 no-underline bg-transparent hover:bg-transparent;
   }
 
   a.icon-link {
-    @apply text-white bg-transparent p-2 ;
+    @apply text-white bg-transparent p-2;
   }
 
   .logo-text {
-    font-family: "Jersey 25", sans-serif;
-    font-size: 48px;
-
-    
+    font-family: 'Jersey 25', sans-serif;
+    font-size: 28px;
   }
+
+  @media (min-width: 640px) {
+    .logo-text {
+      font-size: 36px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .logo-text {
+      font-size: 48px;
+    }
+  }
+
 }

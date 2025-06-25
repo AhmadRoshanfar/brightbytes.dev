@@ -1,43 +1,33 @@
 import { Link } from "gatsby";
 import React from "react";
 
-
-
 const Header = () => {
   return (
-    <div className="w-full py-2 px-8 bg-logo-bg-color text-white flow-root">
-      <nav className="flex items-center justify-between h-full">
-        <div className=" flex float-left my-3 mx-10">
-          <Link href="/" className="text-white text-2xl justify-start">
-            <h1 className="logo-text text-logo-color">
-              BrightBytes.dev
-            </h1>
-          </Link>
-        </div>
-        <div className="flex justify-end h-full float-right">
-          <ul className="flex ">
-            {/* <li className="text-white ">
-              <Link className="flex text-center" to="/about">
-                About
-              </Link>
-            </li> */}
-            <li className="text-white mx-10 ">
-              <Link className="flex text-center " to="/">
-                Home
-              </Link>
-            </li>
-            {/* <li className="flex text-white items-center rounded mx-1 max-h-full bg-yellow-500 px-5 font-bold">
-              <Link to="/">Donate</Link>
-            </li> */}
-            <li className="flex text-white items-center rounded mx-1 max-h-full bg-green-500 px-5 font-bold">
-              <Link to="/contact" className=" ">
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </div>
+    <header className="w-full px-4 sm:px-8 py-3 bg-logo-bg-color text-white">
+      <nav className="flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="text-2xl sm:text-3xl text-logo-color font-bold logo-text">
+          BrightBytes.dev
+        </Link>
+
+        {/* Navigation */}
+        <ul className="flex items-center space-x-6">
+          <li>
+            <Link to="/" className="text-white hover:underline">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/contact"
+              className="bg-green-500 px-4 py-1 rounded text-white font-semibold hover:bg-green-600 transition"
+            >
+              Contact
+            </Link>
+          </li>
+        </ul>
       </nav>
-    </div>
+    </header>
   );
 };
 
