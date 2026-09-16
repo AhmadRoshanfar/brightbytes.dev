@@ -11,23 +11,32 @@ export default function About() {
         <h1>
           Hello, I’m Ahmad<span className="brand-dot">.</span>
         </h1>
-        <p>I like exploring what happens when hardware meets software.</p>
+        <p>I build software for devices, from the firmware to the screen.</p>
       </section>
       <div className="about-content">
         <div className="prose">
           <p>
-            BrightBytes is my notebook for the things I build and learn:
-            embedded Linux, electronics, and applications that connect the two.
+            I’m an embedded software engineer based in Canada. I work on the
+            different pieces that make a device useful: firmware, Linux systems,
+            wireless connections, and the applications people use to interact
+            with it.
           </p>
           <p>
-            Here, I share practical walkthroughs and project notes — from
-            running Flutter on a small Linux board to putting a photo on an
-            e-paper display. My aim is to make each experiment easier for the
-            next person to follow.
+            I like working across those layers. A project might start with
+            getting a sensor reading, then grow into a Linux application or an
+            interface that makes the data easier to understand. Figuring out how
+            the pieces fit together is a big part of what I enjoy about the work.
           </p>
           <p>
-            If you’re working on something similar, or spot a way to improve a
-            guide, I’d love to hear from you.
+            BrightBytes is where I keep notes from that process. I write about
+            things I’ve tried, problems I’ve worked through, and details I’d want
+            to remember next time. Some posts are step-by-step guides. Others
+            are small experiments that seemed worth sharing.
+          </p>
+          <p>
+            I hope you find something here that helps with your own projects.
+            If you’ve tried a different approach, spotted a mistake, or just
+            want to talk about what you’re building, I’d be happy to hear from you.
           </p>
           <Link className="button" to="/contact/">
             Get in touch <ArrowRight size={16} />
@@ -36,18 +45,18 @@ export default function About() {
         <div className="interest-list">
           <div>
             <Cpu />
-            <h2>Hardware & embedded</h2>
-            <p>Small boards. Real-world projects.</p>
+            <h2>Embedded systems</h2>
+            <p>Firmware, sensors, and connected devices.</p>
           </div>
           <div>
             <Terminal />
-            <h2>Linux & tools</h2>
-            <p>Useful workflows, one command at a time.</p>
+            <h2>Linux & development</h2>
+            <p>Bringing up boards and building the software around them.</p>
           </div>
           <div>
             <Code2 />
-            <h2>Software & interfaces</h2>
-            <p>Applications that make things work.</p>
+            <h2>Applications & interfaces</h2>
+            <p>Tools that make devices easier to use.</p>
           </div>
         </div>
       </div>
@@ -58,6 +67,6 @@ export const Head = () => (
   <SEO
     title="About Ahmad Roshanfar"
     pathname="/about/"
-    description="Meet Ahmad Roshanfar, the developer behind BrightBytes: a notebook of embedded Linux, electronics, and software projects."
+    description="Ahmad Roshanfar is an embedded software engineer based in Canada. BrightBytes is where he shares notes on firmware, Linux, connected devices, and applications."
   />
 );
