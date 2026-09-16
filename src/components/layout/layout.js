@@ -1,18 +1,23 @@
 import React from "react";
-import Footer from "./footer";
 import Header from "./header";
-
-const Layout = ({ children }) => {
+import Footer from "./footer";
+import AnalyticsConsent from "../analyticsConsent";
+export default function Layout({ children, className = "" }) {
   return (
-    <>
-    <div className="flex flex-col min-h-screen">
+    <div id="top" className="site-shell">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <Header />
-      <main className="flex-grow mx-10 pb-16">{children}</main>
-      <Footer className="fixed bottom-0 left-0 w-full bg-white shadow-md py-4" />
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className={`site-main ${className}`}
+      >
+        {children}
+      </main>
+      <Footer />
+      <AnalyticsConsent />
     </div>
-  </>
-  
   );
-};
-
-export default Layout;
+}

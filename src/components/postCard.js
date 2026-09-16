@@ -1,43 +1,70 @@
-import { Link } from "gatsby";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import React from "react";
-
-const PostCard = ({ nodes }) => {
+import { Link, graphql } from "gatsby";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import { ArrowUpRight, Code2 } from "lucide-react";
+import { postPath } from "../lib/content.cjs";
+export const fragment = graphql`
+  fragment PostCardData on Mdx {
+    id
+    excerpt(pruneLength: 160)
+    fields {
+      readingMinutes
+    }
+    frontmatter {
+      title
+      slug
+      description
+      date(formatString: "MMM D, YYYY")
+      tags
+      featuredImage {
+        childImageSharp {
+          gatsbyImageData(width: 800, aspectRatio: 1.6, placeholder: BLURRED)
+        }
+      }
+    }
+  }
+`;
+export default function PostCard({ nodes = [] }) {
   return (
-    <div className="flex flex-col w-full space-y-3 pt-2">
-      {nodes.map((node) => (
-        <article
-          key={node.id}
-          className="bg-post-bg text-white rounded-lg shadow-md overflow-hidden"
-        >
-          <Link to={`/blog/${node.frontmatter.slug}`}>
-            <div className="flex flex-col md:flex-row items-start gap-4 px-4">
-              <div className="w-full md:w-auto flex justify-center">
-                <div className="w-full h-40 sm:h-32 flex items-center justify-center bg-white rounded-md overflow-hidden">
-                  <GatsbyImage
-                    className="w-full h-full object-contain"
-                    image={getImage(node.frontmatter.featuredImage.childImageSharp.gatsbyImageData)}
-                    alt={node.frontmatter.title}
-                  />
+    <div className="post-grid">
+      {nodes.map((node, index) => {
+        const post = node.frontmatter;
+        const image = getImage(post.featuredImage);
+        return (
+          <article
+            className="post-card enter"
+            style={{ "--delay": `${index * 65}ms` }}
+            key={node.id}
+          >
+            <Link className="post-card-link" to={postPath(post.slug)}>
+              <div className="card-image">
+                {image ? (
+                  <GatsbyImage image={image} alt="" />
+                ) : (
+                  <div className="image-placeholder">
+                    <Code2 size={44} />
+                  </div>
+                )}
+                <span className="image-arrow">
+                  <ArrowUpRight size={20} />
+                </span>
+              </div>
+              <div className="card-body">
+                <div className="card-category">
+                  {(post.tags || []).slice(0, 2).join(" / ") || "Field notes"}
+                </div>
+                <h2>{post.title}</h2>
+                <p>{post.description || node.excerpt}</p>
+                <div className="card-meta">
+                  <span>{post.date}</span>
+                  <span className="meta-dot" />
+                  <span>{node.fields.readingMinutes} min read</span>
                 </div>
               </div>
-
-              <div className="flex flex-col justify-between w-full px-2 pb-2 md:px-2">
-                <h2 className="text-lg font-bold mb-2">{node.frontmatter.title}</h2>
-                <p className="hidden sm:block text-gray-300 text-sm line-clamp-3 mb-4">
-                  {node.excerpt}
-                </p>
-                <div className="flex justify-between text-xs text-gray-400 mt-auto">
-                  <span>Author: Ahmad Roshanfar</span>
-                  <span>{node.frontmatter.date}</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </article>
-      ))}
+            </Link>
+          </article>
+        );
+      })}
     </div>
   );
-};
-
-export default PostCard;
+}

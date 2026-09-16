@@ -1,81 +1,61 @@
-import { Link, graphql } from "gatsby";
 import React from "react";
-import Category from "../components/category";
+import { Link, graphql } from "gatsby";
 import Layout from "../components/layout/layout";
 import PostCard from "../components/postCard";
-
-export default class BlogList extends React.Component {
-  render() {
-    const posts = this.props.data.allMdx.edges;
-    const nodes = this.props.data.allMdx.nodes;
-    const { currentPage, numPages } = this.props.pageContext;
-    const isFirst = currentPage === 1;
-    const isLast = currentPage === numPages;
-    const prevPage = currentPage - 1 === 1 ? "/" : (currentPage - 1).toString();
-    const nextPage = (currentPage + 1).toString();
-
-    console.log(posts);
-    return (
-      <Layout>
-        <div className="flex flex-col md:flex-row space-x-4">
-          <PostCard nodes={nodes} />
-          <Category />
-        </div>
-        <div className="flex flex-row justify-center items-center">
-          {!isFirst && (
-            <Link
-              to={`/blog${currentPage === 2 ? "" : `/${prevPage}`}`}
-              rel="prev"
-            >
-              ← Previous Page
+import Category from "../components/category";
+import { SEO } from "../components/seo";
+const pagePath = (n) => (n === 1 ? "/blog/" : `/blog/${n}/`);
+export default function BlogList({
+  data,
+  pageContext: { currentPage, numPages },
+}) {
+  return (
+    <Layout>
+      <section className="page-intro enter">
+        <p className="eyebrow">THE NOTEBOOK</p>
+        <h1>All the field notes.</h1>
+        <p>Projects, practical tutorials, and lessons from building things.</p>
+      </section>
+      <Category />
+      <PostCard nodes={data.allMdx.nodes} />
+      {numPages > 1 && (
+        <nav className="pagination" aria-label="Article pagination">
+          {currentPage > 1 && (
+            <Link rel="prev" to={pagePath(currentPage - 1)}>
+              ← Previous
             </Link>
           )}
           {Array.from({ length: numPages }, (_, i) => (
-            <p
-              key={`pagination-number${i + 1}`}
-              style={{
-                margin: 0,
-              }}
+            <Link
+              aria-current={currentPage === i + 1 ? "page" : undefined}
+              key={i}
+              to={pagePath(i + 1)}
             >
-              <Link to={`/blog/${i === 0 ? "" : i + 1}`}>{i + 1}</Link>
-            </p>
+              {i + 1}
+            </Link>
           ))}
-          {!isLast && (
-            <Link to={`/blog/${nextPage}`} rel="next">
-              Next Page →
+          {currentPage < numPages && (
+            <Link rel="next" to={pagePath(currentPage + 1)}>
+              Next →
             </Link>
           )}
-        </div>
-      </Layout>
-    );
-  }
+        </nav>
+      )}
+    </Layout>
+  );
 }
-
-export const blogListQuery = graphql`
-  query blogListQuery($skip: Int!, $limit: Int!) {
+export const query = graphql`
+  query BlogArchive($skip: Int!, $limit: Int!) {
     allMdx(sort: { frontmatter: { date: DESC } }, limit: $limit, skip: $skip) {
-      edges {
-        node {
-          frontmatter {
-            title
-            slug
-          }
-        }
-      }
       nodes {
-        frontmatter {
-          title
-          slug
-          date(formatString: "MMMM D, YYYY")
-          featuredImage {
-            childImageSharp {
-              gatsbyImageData(height:130)
-            }
-          }
-        }
-        id
-        excerpt(pruneLength: 220)
+        ...PostCardData
       }
     }
   }
 `;
+export const Head = ({ pageContext: { currentPage } }) => (
+  <SEO
+    title={currentPage === 1 ? "All writing" : `Writing · Page ${currentPage}`}
+    pathname={pagePath(currentPage)}
+  />
+);

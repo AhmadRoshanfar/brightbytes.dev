@@ -1,27 +1,48 @@
 import React from "react";
-import { FaGithub, FaLinkedin, FaYoutube } from "react-icons/fa";
-
-const Footer = () => {
+import { Link } from "gatsby";
+import { Github, Linkedin, Rss, ArrowUpRight } from "lucide-react";
+import { AnalyticsPreferences } from "../analyticsConsent";
+import { SupportLink } from "../support";
+export default function Footer() {
   return (
-    <footer>
-      <div className="grid grid-cols-3 gap-4 bg-logo-bg-color text-cyan-100 mt-10">
-        <div className="grid grid-cols-2 sml-10 my-4">
-          <div className="flex flex-row space-x-2 ml-10">
-
-            <a className="icon-link hover:text-linkedin-bg" href="https://www.linkedin.com/in/ahmadroshanfar/">
-            <FaLinkedin size={"2rem"} />
-            </a>
-            <a className="icon-link hover:text-gray-500" href="https://github.com/AhmadRoshanfar">
-            <FaGithub size={"2rem"} />
-            </a>
-            <a className="icon-link hover:text-youtube-bg" href="https://www.youtube.com/@ahmadroshanfar">
-            <FaYoutube size={"2rem"} />
-            </a>
-          </div>
+    <footer className="site-footer">
+      <div className="footer-top">
+        <div>
+          <Link className="footer-brand" to="/">
+            brightbytes.
+          </Link>
+          <p>Small discoveries. Useful things.</p>
+        </div>
+        <div className="footer-links">
+          <SupportLink className="footer-support" />
+          <a
+            href="https://github.com/AhmadRoshanfar"
+            aria-label="Ahmad on GitHub"
+          >
+            <Github size={19} />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/ahmadroshanfar/"
+            aria-label="Ahmad on LinkedIn"
+          >
+            <Linkedin size={19} />
+          </a>
+          <a href="/rss.xml" aria-label="Subscribe via RSS">
+            <Rss size={19} />
+          </a>
+          <Link to="/contact/">
+            Say hello <ArrowUpRight size={14} />
+          </Link>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© {new Date().getFullYear()} Ahmad Roshanfar</span>
+        <div>
+          <Link to="/privacy/">Privacy</Link>
+          <AnalyticsPreferences />
+          <a href="#top">Back to top ↑</a>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

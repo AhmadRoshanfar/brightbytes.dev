@@ -1,17 +1,18 @@
 ---
 title: "Deploying a Gatsby Site on GitHub Pages"
+description: "Publish a Gatsby blog on GitHub Pages, configure a custom domain, and build a simple deployment workflow."
 date: "2025-03-15"
 slug: "deploying-a-gatsby-site-on-github-pages"
 tags:
   - "Gatsby"
   - "GithubPages"
   - "Blog"
-featuredImage: ./gatsby-github.png
+featuredImage: ./cover.png
+featuredImageAlt: "Illustration of a code window connected through a Git repository to a published blog."
 isFavorite: "Yes"
 ---
 import CodeViewer from '../../components/mdx/codeViewer.js';
 
-# Deploying a Gatsby Site on GitHub Pages
 
 ## Introduction
 
@@ -24,8 +25,8 @@ First, we need to install the `gh-pages` package:
 
 <CodeViewer
   code={`\
-    npm install gh-pages
-  `}
+  npm install gh-pages
+`}
 />
 
 ## Step 2: Add a Deploy Script
@@ -54,13 +55,12 @@ Create a `config.js` file in the root of your project and add the following cont
 <CodeViewer
   code={`\
   const config = {
-  gatsby: {
-    siteUrl: "https://<YOUR_SITE_DOMAIN>",
-    gaTrackingId: null,
-    trailingSlash: false,
-  },
-};
-  },  
+    gatsby: {
+      siteUrl: "https://<YOUR_SITE_DOMAIN>",
+      gaTrackingId: null,
+      trailingSlash: false,
+    },
+  };
 `}
 />
 
@@ -69,10 +69,10 @@ Then, include this file at the top of `gatsby-config.js`:
 
 <CodeViewer
   code={`\
-/**
- * @type {import('gatsby').GatsbyConfig}
- */
-const config = require("./config");
+  /**
+  * @type {import('gatsby').GatsbyConfig}
+  */
+  const config = require("./config");
 `}
 />
 
@@ -83,12 +83,12 @@ Add a CNAME and four A records in your domain DNS settings. Refer to the [GitHub
 
 <CodeViewer
   code={`\
-CNAME    www    <YOUR_GITHUB_USERNAME>.github.io.
+  CNAME    www    <YOUR_GITHUB_USERNAME>.github.io.
 
-A        @      185.199.108.153
-A        @      185.199.109.153
-A        @      185.199.110.153
-A        @      185.199.111.153
+  A        @      185.199.108.153
+  A        @      185.199.109.153
+  A        @      185.199.110.153
+  A        @      185.199.111.153
 `}
 />
 
@@ -100,12 +100,12 @@ Create a new repository on GitHub and add your project:
 
 <CodeViewer
   code={`\
-git init .
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/<username>/<repo_name>.git
-git push -u origin main
+  git init .
+  git add .
+  git commit -m "Initial commit"
+  git branch -M main
+  git remote add origin https://github.com/<username>/<repo_name>.git
+  git push -u origin main
 `}
 />
 
@@ -119,8 +119,8 @@ Before publishing, build and serve your website in deployment mode to check ever
 
 <CodeViewer
   code={`\
-gatsby build
-gatsby serve
+  gatsby build
+  gatsby serve
 `}
 />
 
@@ -130,7 +130,7 @@ To deploy your site on GitHub Pages, run:
 
 <CodeViewer
   code={`\
-npm run deploy
+  npm run deploy
 `}
 />
 
@@ -141,7 +141,7 @@ To avoid setting the custom domain every time you deploy, create a `static/CNAME
 
 <CodeViewer
   code={`\
-brightbytes.dev
+  brightbytes.dev
 `}
 />
 

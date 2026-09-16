@@ -1,39 +1,33 @@
-import { Link, StaticQuery, graphql } from "gatsby";
-import kebabCase from "lodash/kebabCase";
 import React from "react";
-
+import { Link, graphql, useStaticQuery } from "gatsby";
+import { tagPath } from "../lib/content.cjs";
 export default function Category() {
-  return (
-    <StaticQuery
-      query={graphql`
-        query TagsQuery {
-          allMdx(limit: 2000) {
-            group(field: { frontmatter: { tags: SELECT } }) {
-              tag: fieldValue
-              totalCount
-            }
-          }
+  const { allMdx } = useStaticQuery(graphql`
+    query TopicNavigation {
+      allMdx {
+        group(field: { frontmatter: { tags: SELECT } }) {
+          fieldValue
+          totalCount
         }
-      `}
-      render={(data) => (
-        <div className="bg-gray-800 rounded-lg px-10 py-4 m-2 h-fit text-white ">
-          <div>
-            <h1 className="text-center">Tags</h1>
-            <div>
-              {data.allMdx.group.map((tag) => (
-                <p key={tag.fieldValue} className="w-full py-2">
-                  <Link
-                    to={`/tags/${kebabCase(tag.tag)}/`}
-                    className=" w-full justify-start px-3 whitespace-nowrap items-start text-start bg-black text-teal-300 "
-                  >
-                    {tag.tag} ({tag.totalCount})
-                  </Link>
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    />
+      }
+    }
+  `);
+  return (
+    <nav className="topic-nav" aria-label="Browse by topic">
+      <Link className="topic-chip" to="/blog/" activeClassName="selected">
+        All notes
+      </Link>
+      {allMdx.group.map((tag) => (
+        <Link
+          className="topic-chip"
+          activeClassName="selected"
+          key={tag.fieldValue}
+          to={tagPath(tag.fieldValue)}
+        >
+          {tag.fieldValue}
+          <span>{tag.totalCount}</span>
+        </Link>
+      ))}
+    </nav>
   );
 }

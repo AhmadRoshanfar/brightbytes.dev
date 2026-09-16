@@ -5,3 +5,8 @@ node_modules
 *.env
 
 .idea/
+.env.*
+!.env.example
+
+# Local generated profile artwork; not part of the published website.
+output/

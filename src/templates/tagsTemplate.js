@@ -1,49 +1,43 @@
-import { Link, graphql } from "gatsby";
 import React from "react";
-
-const TagsTemplate = ({ pageContext, data }) => {
-  const { tag } = pageContext;
-  const { edges, totalCount } = data.allMdx;
-  const tagHeader = `${totalCount} post${totalCount === 1 ? "" : "s"
-    } tagged with "${tag}"`;
-
+import { graphql } from "gatsby";
+import Layout from "../components/layout/layout";
+import Category from "../components/category";
+import PostCard from "../components/postCard";
+import { SEO } from "../components/seo";
+import { tagPath } from "../lib/content.cjs";
+export default function TagPage({ data, pageContext: { tag } }) {
   return (
-    <div>
-      <h1>{tagHeader}</h1>
-      <ul>
-        {edges.map(({ node }) => {
-          const { slug } = node.frontmatter;
-          const { title } = node.frontmatter;
-          return (
-            <li key={slug}>
-              <Link to={`/blog/${slug}`}>{title}</Link>
-            </li>
-          );
-        })}
-      </ul>
-      <Link to="/tags">All tags</Link>
-    </div>
+    <Layout>
+      <section className="page-intro">
+        <p className="eyebrow">EXPLORE A TOPIC</p>
+        <h1>{tag}</h1>
+        <p>
+          {data.allMdx.totalCount}{" "}
+          {data.allMdx.totalCount === 1 ? "note" : "notes"} from the workbench.
+        </p>
+      </section>
+      <Category />
+      <PostCard nodes={data.allMdx.nodes} />
+    </Layout>
   );
-};
-
-export const pageQuery = graphql`
-  query ($tag: String) {
+}
+export const query = graphql`
+  query TaggedArticles($tag: String!) {
     allMdx(
-      limit: 2000
       sort: { frontmatter: { date: DESC } }
       filter: { frontmatter: { tags: { in: [$tag] } } }
     ) {
       totalCount
-      edges {
-        node {
-          frontmatter {
-            slug
-            title
-          }
-        }
+      nodes {
+        ...PostCardData
       }
     }
   }
 `;
-
-export default TagsTemplate;
+export const Head = ({ pageContext: { tag } }) => (
+  <SEO
+    title={`${tag} articles`}
+    description={`Practical ${tag} tutorials and project notes by Ahmad Roshanfar.`}
+    pathname={tagPath(tag)}
+  />
+);

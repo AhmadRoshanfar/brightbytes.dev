@@ -1,66 +1,65 @@
-// CodeViewer.js
-import React, { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-const CodeViewer = ({ code, language = 'bash', filename = "  " }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
+import React, { useEffect, useRef, useState } from "react";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+import cpp from "react-syntax-highlighter/dist/esm/languages/prism/cpp";
+import dart from "react-syntax-highlighter/dist/esm/languages/prism/dart";
+import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Check, Copy } from "lucide-react";
+import { track } from "../../lib/analytics";
+Object.entries({ bash, javascript, json, css, python, cpp, dart }).forEach(
+  ([name, syntax]) => SyntaxHighlighter.registerLanguage(name, syntax),
+);
+export default function CodeViewer({ code, language = "bash" }) {
+  const [status, setStatus] = useState("");
+  const timer = useRef(null);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  async function copy() {
     try {
       await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1000);
-    } catch (err) {
-      console.error('Failed to copy code: ', err);
+      setStatus("Copied!");
+      track("copy_code", { language, page_path: window.location.pathname });
+    } catch {
+      setStatus("Select the code to copy it");
     }
-  };
-
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setStatus(""), 2500);
+  }
   return (
-    <div
-      style={{
-        border: '1px solid #ddd',
-        borderRadius: '5px',
-        overflow: 'hidden',
-        margin: '1em 0',
-      }}
-    >
+    <div className="code-block">
+      <div className="code-toolbar">
+        <span>{language}</span>
+        <button onClick={copy} aria-label="Copy code">
+          {status === "Copied!" ? <Check size={14} /> : <Copy size={14} />}
+          <span>{status || "Copy"}</span>
+        </button>
+        <span className="sr-only" role="status">
+          {status}
+        </span>
+      </div>
       <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          backgroundColor: '#132942',
-          padding: '0.5em 1em',
-          alignItems: 'center',
-          color:"white"
-        }}
+        className="code-scroll"
+        tabIndex={0}
+        role="region"
+        aria-label={`${language} code`}
       >
-        {filename && <strong>{filename}</strong>}
-        <button
-          onClick={handleCopy}
-          style={{
-            background: '#fff',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            padding: '0.3em 0.6em',
-            cursor: 'pointer',
-            color: "#132942"
+        <SyntaxHighlighter
+          language={language}
+          style={dracula}
+          customStyle={{
+            margin: 0,
+            background: "transparent",
+            padding: "1.35rem",
+            fontSize: ".85rem",
+            lineHeight: 1.8,
           }}
         >
-          {copied ? 'Copied!' : 'Copy'}
-        </button>
+          {code.trim()}
+        </SyntaxHighlighter>
       </div>
-
-      {/* Code block */}
-      <SyntaxHighlighter
-        language={language}
-        style={prism}
-        customStyle={{ margin: 0, borderRadius: 0 }}
-      >
-        {code}
-      </SyntaxHighlighter>
     </div>
   );
-};
-
-export default CodeViewer;
+}

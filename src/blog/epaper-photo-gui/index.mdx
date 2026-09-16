@@ -1,0 +1,137 @@
+---
+title: "EPaper Image Generator GUI"
+description: "Build a Qt workflow for preparing photos and sending them to a Raspberry Pi e-paper display over SSH."
+date: "2025-10-22"
+slug: "epaper-photo-gui"
+tags:
+  - "EPaper"
+  - "GUI"
+  - "Qt"
+featuredImage: ./cover.png
+featuredImageAlt: "Illustration of an e-paper display with a dithered landscape, a photo-processing interface, and a connected single-board computer."
+isFavorite: "Yes"
+---
+import CodeViewer from '../../components/mdx/codeViewer.js';
+import GitHubLink from '../../components/mdx/GithubLink.js';
+
+<GitHubLink url="https://github.com/AhmadRoshanfar/EPaper-Photo" />
+
+## Prerequisites
+
+- Raspberry Pi with RPi OS Lite (flash to SD card)
+- E-Paper display module
+- Linux development machine with Qt installed
+
+## Setup
+
+### On Linux (Development Machine)
+
+Find your host IP address:
+
+<CodeViewer
+  code={`\
+  hostname -I
+`}
+/>
+
+Search for Raspberry Pi IP address:
+
+<CodeViewer
+  code={`\
+  nmap -sn <host_address>/24
+`}
+/>
+
+Generate an SSH key pair:
+
+<CodeViewer
+  code={`\
+  ssh-keygen -t ed25519 -C "qt-deployer" -f ~/.ssh/id_ed25519
+`}
+/>
+
+Copy the public key to the Raspberry Pi:
+
+<CodeViewer
+  code={`\
+  ssh-copy-id -i ~/.ssh/id_ed25519.pub <username>@<remote_address>
+`}
+/>
+
+Clone the repository:
+
+<CodeViewer
+  code={`\
+  git clone https://github.com/AhmadRoshanfar/EPaper-Photo.git
+  cd RPi-EPaper
+`}
+/>
+
+Transfer project files to Raspberry Pi:
+
+<CodeViewer
+  code={`\
+  scp -r ./RPi-EPaper pi@192.168.8.39:~
+`}
+/>
+
+### On Raspberry Pi (Target Device)
+
+Enable SPI interface:
+
+<CodeViewer
+  code={`\
+  sudo raspi-config nonint do_spi 0
+`}
+/>
+
+## Usage
+
+- Run the Qt application on your development machine
+- Choose your image
+- Enter username and host address
+- Press **Sync** and wait until the image uploads to the display
+
+## Building and Deployment
+
+### 1. Compile the Project
+
+Build the project in **Release** mode using Qt Creator.
+
+### 2. Install CQtDeployer
+
+<CodeViewer
+  code={`\
+  sudo snap install cqtdeployer --classic
+`}
+/>
+
+### 3. Deploy the Application
+
+Navigate to the build directory:
+
+<CodeViewer
+  code={`\
+  cd build/Desktop_Qt_6_9_3-Release
+`}
+/>
+
+Run CQtDeployer:
+
+<CodeViewer
+  code={`\
+  cqtdeployer -bin ./appEPaper_Qt \\
+              -qmake /opt/Qt/6.9.3/gcc_64/bin/qmake \\
+              -qmlDir ../../
+`}
+/>
+
+### 4. Locate the Deployed Application
+
+The deployed application will be available in:
+
+<CodeViewer
+  code={`\
+  build/Desktop_Qt_6_9_3-Release/DistributionKit/bin/
+`}
+/>

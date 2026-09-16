@@ -1,19 +1,14 @@
-import { Link } from "gatsby";
-import kebabCase from "lodash/kebabCase";
 import React from "react";
-
-const TitleTags = ({ tags }) => {
+import { Link } from "gatsby";
+import { tagPath } from "../lib/content.cjs";
+export default function TitleTags({ tags = [] }) {
   return (
-    <div className="flex flex-row h-full justify-center items-center">
+    <div className="tag-list">
       {tags.map((tag) => (
-        <Link
-          to={`/tags/${kebabCase(tag)}/`}
-          className="flex mx-1 my-2 bg-gray-200 py-1 px-2 text-sm rounded	"
-        >
+        <Link className="tag" key={tag} to={tagPath(tag)}>
           {tag}
         </Link>
       ))}
     </div>
   );
-};
-export default TitleTags;
+}
